@@ -24,7 +24,7 @@ def write_table(filename, dat):
         writer = csv.DictWriter(file,delimiter=';', fieldnames=list(dat)).writerow(dat)
 
 def main():
-    column_name = ['art', 'brand', 'price', 'name', 'value']
+    column_name = 'art', 'brand', 'price', 'name', 'value'
     create_table(TABLE_NAME, column_name)
     with webdriver.Chrome(options=options) as browser:
         with open('links.csv', 'r', encoding='utf-8-sig') as file:
@@ -39,11 +39,11 @@ def main():
 
                     art = browser.find_element(By.CLASS_NAME, "product-article__copy").text
                     brand = browser.find_element(By.CLASS_NAME, "product-page__header").text
-                    price = [x.text for x in browser.find_elements(By.CLASS_NAME, 'price-block__final-price')]
+                    price = [x.text for x in browser.find_elements(By.CLASS_NAME, 'price-block__final-price')][1]
                     description_data = browser.find_elements(By.XPATH, '//tr[@class="product-params__row"]')
                     for data in description_data:
-                        name = [x.text for x in data.find_elements(By.CSS_SELECTOR, 'th')]
-                        value = [x.text for x in data.find_elements(By.CSS_SELECTOR, 'td')]
+                        name = data.find_element(By.CSS_SELECTOR, 'th').text
+                        value = data.find_element(By.CSS_SELECTOR, 'td').text
                         dat = {'art': art, 'brand': brand, 'price': price, 'name': name, 'value': value}
                         write_table(TABLE_NAME, dat)
                 except Exception as e:
